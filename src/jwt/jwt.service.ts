@@ -28,22 +28,22 @@ export class TokenService {
   // tokenlarni qaytarish va cookie ga yozish
   async generateTokensAndSetCookies(
     payload: { userId: string; role: string },
-
+    res:Response
   ) {
     const accessToken = await this.generateAccessToken(payload);
     const refreshToken = await this.generateRefreshToken(payload);
 
-    // res.cookie('access_token', accessToken, {
-    //   httpOnly: true,
-    //   secure: false, // productionda true qiling (https bo'lsa)
-    //   maxAge: 15 * 60 * 1000, // 15 min
-    // });
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: false, // productionda true qiling (https bo'lsa)
+      maxAge: 15 * 60 * 1000, // 15 min
+    });
 
-    // res.cookie('refresh_token', refreshToken, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    // });
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     return { accessToken, refreshToken };
   }

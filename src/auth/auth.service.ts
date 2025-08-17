@@ -5,6 +5,7 @@ import { LoginDto, VerifyDto } from './dto/login.dto';
 import { TelegramBotService } from 'src/telegram/telegram.service';
 import { UsersService } from 'src/users/users.service';
 
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -46,8 +47,7 @@ export class AuthService {
     }
   }
 
-  // Step 2: Kodni tekshirish
-  async verify(verifydto:VerifyDto ) {
+  async verify(verifydto:VerifyDto,res: Response ) {
     const{phone,inputCode} = verifydto
     const record = this.codes.get(phone);
     const user = await this.userService.findByPhone(phone)
@@ -64,14 +64,13 @@ export class AuthService {
       throw new UnauthorizedException('Kod noto‘g‘ri.');
     }
 
-    // Kod to‘g‘ri → tokenlar yaratamiz
     this.codes.delete(phone);
 
-    const payload = { userId: user.id, role: 'user' }; // DB ishlatilmagani uchun phone userId sifatida
-    const tokens = await this.tokenService.generateTokensAndSetCookies(payload);
-    return {
-      message: 'Login muvaffaqiyatli',
-      ...tokens,
-    };
+    const payload = { userId: user.id, role: 'user' };
+    const tokens = await this.tokenService.generateTokensAndSetCookies(payload,res);
+    return res.json({
+    message: 'Login muvaffaqiyatli',
+    ...tokens,
+  });
   }
 }
