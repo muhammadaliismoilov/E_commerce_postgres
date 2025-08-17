@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   // Step 2: Kodni tekshirish
-  async verify(verifydto:VerifyDto ,res: Response) {
+  async verify(verifydto:VerifyDto ) {
     const{phone,inputCode} = verifydto
     const record = this.codes.get(phone);
     const user = await this.userService.findByPhone(phone)
@@ -68,10 +68,10 @@ export class AuthService {
     this.codes.delete(phone);
 
     const payload = { userId: user.id, role: 'user' }; // DB ishlatilmagani uchun phone userId sifatida
-    const tokens = await this.tokenService.generateTokensAndSetCookies(payload, res);
-    return res.json({
+    const tokens = await this.tokenService.generateTokensAndSetCookies(payload);
+    return {
       message: 'Login muvaffaqiyatli',
       ...tokens,
-    });
+    };
   }
 }
