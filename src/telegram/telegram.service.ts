@@ -24,6 +24,15 @@ export class TelegramBotService {
     this.handleMessages();
   }
 
+  async sendCode(chatId: number, code: string) {
+    return this.bot.sendMessage(
+      chatId,
+      `🔑 Sizning tasdiqlash kodingiz: *${code}* \n\n❗️ Kod 2 daqiqa amal qiladi.`,
+      { parse_mode: 'Markdown' },
+    );
+  }
+
+
   private handleMessages() {
     this.bot.onText(/\/start/, async (msg) => {
       const chatId = msg.chat.id;

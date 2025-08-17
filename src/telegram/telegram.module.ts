@@ -12,7 +12,8 @@ import { TelegramBotService } from './telegram.service';
     ConfigModule,   // 🔥 DRIZZLE_DB ni olish uchun
     UsersModule      // 🔥 UsersService dan foydalanish uchun
   ],
-  providers: [TelegramBotService],  // ✅ UsersModule ni import qildik
+  providers: [TelegramBotService],
+  exports:[TelegramBotService]  // ✅ UsersModule ni import qildik
 })
 export class TelegramBotModule implements OnModuleInit {
   private bot: TelegramBot;

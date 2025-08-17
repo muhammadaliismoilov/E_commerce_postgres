@@ -38,6 +38,14 @@ export class UsersService {
     if (!user.length) throw new NotFoundException("User not found");
     return user[0];
   }
+  async findByPhone(phone: string) {
+    const user = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.phone, phone));
+    if (!user.length) throw new NotFoundException("User not found");
+    return user[0];
+  }
 
   // Agar user mavjud bo‘lmasa, yaratadi
   async createOrFindUser(telegramId: string) {
