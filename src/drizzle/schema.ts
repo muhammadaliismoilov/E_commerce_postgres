@@ -1,15 +1,15 @@
 import { pgTable, uuid, varchar, integer, jsonb,decimal, date, timestamp, bigint, customType, numeric } from "drizzle-orm/pg-core";
 import { pgEnum ,} from "drizzle-orm/pg-core";
 import {sql} from "drizzle-orm";
-import {roleEnum} from "./enums/role.enum";
-import {genderEnum} from "./enums/gender.enum";
-
+import { RoleEnum } from "./enums/role.enum";
+import { GenderEnum } from "./enums/gender.enum";
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({
   dataType() {
     return "bytea";
   },
 });
+export const roleEnum = pgEnum("role", RoleEnum);
 
 // USERS
 export const users = pgTable("users", {
@@ -17,14 +17,16 @@ export const users = pgTable("users", {
   telegramId: varchar("telegram_id", { length: 255 }).notNull(),
   phone: varchar("phone",{length:255}).notNull(),
   fullName: varchar("full_name", { length: 255 }).notNull(),
-  role: roleEnum("role").notNull().default("user"),
+  role: roleEnum("role").notNull().default(RoleEnum.User),
 });
+
+export const genderEnum = pgEnum("gender", GenderEnum);
 
 // BRANDS
 export const brands = pgTable("brands", {
   id: uuid("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  gender: genderEnum("gender").notNull().default("uniseks"),
+  gender: genderEnum("gender").notNull(),
 });
 
 // PRODUCTS
@@ -33,12 +35,62 @@ export const products = pgTable("products", {
   brandId: uuid("brand_id").notNull().references(() => brands.id),
   name: jsonb("name").notNull(),
   description: jsonb("description").notNull(),
-  gender: genderEnum("gender").notNull().default("uniseks"),
+  gender: genderEnum("gender").notNull().default(GenderEnum.unisex),
   poizonUrl: varchar("poizon_url", { length: 255 }),
   videoPath: varchar("video_path", { length: 255 }),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   topUntil: date("top_until").notNull(),
 });
+
+// PRODUCT IMAGES
+export const productImages = pgTable("product_images", {
+  id: uuid("id").primaryKey(),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  imagesPath: bytea("images_path").notNull(),
+});
+
+// ATTRIBUTE GROUPS
+export const attributeGroups = pgTable("attribute_groups", {
+  id: uuid("id").primaryKey(),
+  name: jsonb("name").notNull(),
+  sequence: integer("sequence"),
+});
+
+// ATTRIBUTES
+export const attributes = pgTable("attributes", {
+  id: uuid("id").primaryKey(),
+  groupId: uuid("group_id").references(() => attributeGroups.id),
+  name: jsonb("name").notNull(),
+  sequence: integer("sequence"),
+});
+
+// ATTRIBUTE OPTIONS
+export const attributeOptions = pgTable("attribute_options", {
+  id: uuid("id").primaryKey(),
+  attributeId: uuid("attribute_id").notNull().references(() => attributes.id),
+  groupId: uuid("group_id").notNull().references(() => attributeGroups.id),
+  name: jsonb("name").notNull(),
+  sequance: integer("sequance"),
+});
+
+// PRODUCT VARIATIONS
+export const productVariations = pgTable("product_variations", {
+  id: uuid("id").primaryKey(),
+  productId: uuid("product_id").notNull().references(() => products.id),
+  name: varchar("name", { length: 500 }).notNull(),
+  count: bigint("count", { mode: "number" }).notNull(),
+});
+
+// PRODUCT VARIATION ATTRIBUTE OPTIONS
+export const productVariationAttributeOptions = pgTable("product_variatino_attribute_options", {
+  id: uuid("id").primaryKey(),
+  productVariationId: uuid("product_variation_id").notNull().references(() => productVariations.id),
+  attributeOptionId: uuid("attribute_option_id").notNull().references(() => attributeOptions.id),
+  productId: uuid("product_id").notNull().references(() => products.id),
+});
+
 
 // PRICES
 export const prices = pgTable("prices", {
@@ -46,6 +98,7 @@ export const prices = pgTable("prices", {
     productVariationId: uuid("product_variation_id")
         .notNull()
         .references(() => productVariations.id),
+    productId: uuid("product_id").notNull().references(() => products.id),
 
     priceUzs: numeric("price_uzs", { precision: 10, scale: 3 }).notNull(),
     priceUsd: numeric("price_usd", { precision: 10, scale: 3 }).notNull(),
@@ -65,51 +118,4 @@ export const prices = pgTable("prices", {
      */
 
     createdAt: timestamp("created_at", { precision: 0 }).defaultNow()
-});
-
-// PRODUCT IMAGES
-export const productImages = pgTable("product_images", {
-  id: uuid("id").primaryKey(),
-  productId: uuid("product_id").notNull().references(() => products.id),
-  imagesPath: bytea("images_path").notNull(),
-});
-
-// ATTRIBUTE GROUPS
-export const attributeGroups = pgTable("attribute_groups", {
-  id: uuid("id").primaryKey(),
-  name: jsonb("name").notNull(),
-  sequence: integer("sequence").notNull(),
-});
-
-// ATTRIBUTES
-export const attributes = pgTable("attributes", {
-  id: uuid("id").primaryKey(),
-  groupId: uuid("group_id").notNull().references(() => attributeGroups.id),
-  name: jsonb("name").notNull(),
-  sequence: integer("sequence").notNull(),
-});
-
-// ATTRIBUTE OPTIONS
-export const attributeOptions = pgTable("attribute_options", {
-  id: uuid("id").primaryKey(),
-  attributeId: uuid("attribute_id").notNull().references(() => attributes.id),
-  groupId: uuid("group_id").notNull().references(() => attributeGroups.id),
-  name: jsonb("name").notNull(),
-  sequance: integer("sequance").notNull(),
-});
-
-// PRODUCT VARIATIONS
-export const productVariations = pgTable("product_variations", {
-  id: uuid("id").primaryKey(),
-  productId: uuid("product_id").notNull().references(() => products.id),
-  name: varchar("name", { length: 255 }).notNull(),
-  count: bigint("count", { mode: "number" }).notNull(),
-});
-
-// PRODUCT VARIATION ATTRIBUTE OPTIONS
-export const productVariationAttributeOptions = pgTable("product_variatino_attribute_options", {
-  id: uuid("id").primaryKey(),
-  productVariationId: uuid("product_variation_id").notNull().references(() => productVariations.id),
-  attributeOptionId: uuid("attribute_option_id").notNull().references(() => attributeOptions.id),
-  productId: uuid("product_id").notNull().references(() => products.id),
 });

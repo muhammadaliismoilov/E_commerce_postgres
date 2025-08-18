@@ -11,11 +11,12 @@ async function bootstrap() {
 
   // Swagger sozlamalari
   const config = new DocumentBuilder()
-    .setTitle('Auth API')
-    .setDescription('Login, verify va tokenlar bilan ishlash uchun API hujjatlar')
-    .setVersion('1.0')
-    .addCookieAuth('access_token') // cookie orqali token yuborish uchun
-    .build();
+    .setTitle('E-commerce API')
+  .setDescription('E-commerce API hujjatlar')
+  .setVersion('1.0')
+  .addBearerAuth()
+  .addCookieAuth('access_token') // cookie orqali token yuborish uchun
+  .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {

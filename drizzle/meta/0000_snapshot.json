@@ -1,5 +1,5 @@
 {
-  "id": "ba9e934e-d647-4413-95e4-4d362dd56c71",
+  "id": "12f0df35-695c-44a9-9764-778d4f133032",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -24,7 +24,7 @@
           "name": "sequence",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -67,7 +67,7 @@
           "name": "sequance",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -119,7 +119,7 @@
           "name": "group_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "name": {
           "name": "name",
@@ -131,7 +131,7 @@
           "name": "sequence",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -175,10 +175,8 @@
         "gender": {
           "name": "gender",
           "type": "gender",
-          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'uniseks'"
+          "notNull": true
         }
       },
       "indexes": {},
@@ -201,6 +199,12 @@
         },
         "product_variation_id": {
           "name": "product_variation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -257,6 +261,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "prices_product_id_products_id_fk": {
+          "name": "prices_product_id_products_id_fk",
+          "tableFrom": "prices",
+          "tableTo": "products",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -300,7 +317,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -405,7 +422,7 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
@@ -469,10 +486,9 @@
         "gender": {
           "name": "gender",
           "type": "gender",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'uniseks'"
+          "default": "'unisex'"
         },
         "poizon_url": {
           "name": "poizon_url",
@@ -547,7 +563,7 @@
         },
         "phone": {
           "name": "phone",
-          "type": "integer",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -560,7 +576,6 @@
         "role": {
           "name": "role",
           "type": "role",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'user'"
@@ -575,7 +590,26 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.gender": {
+      "name": "gender",
+      "schema": "public",
+      "values": [
+        "male",
+        "female",
+        "unisex"
+      ]
+    },
+    "public.role": {
+      "name": "role",
+      "schema": "public",
+      "values": [
+        "user",
+        "admin",
+        "superadmin"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

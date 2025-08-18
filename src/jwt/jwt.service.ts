@@ -10,12 +10,18 @@ export class TokenService {
   private readonly refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || 'refresh-secret';
 
   // access token yaratish (15 daqiqa)
+  // async generateAccessToken(payload: { userId: string; role: string }) {
+  //   return this.jwtService.signAsync(payload, {
+  //     secret: this.accessTokenSecret,
+  //     expiresIn: '15m',
+  //   });
+  // }
   async generateAccessToken(payload: { userId: string; role: string }) {
-    return this.jwtService.signAsync(payload, {
-      secret: this.accessTokenSecret,
-      expiresIn: '15m',
-    });
-  }
+  return this.jwtService.signAsync(
+    { sub: payload.userId, role: payload.role },
+    { secret: this.accessTokenSecret, expiresIn: '15m' }
+  );
+}
 
   // refresh token yaratish (7 kun)
   async generateRefreshToken(payload: { userId: string; role: string }) {
