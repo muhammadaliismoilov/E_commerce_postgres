@@ -11,8 +11,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post("create")
-   @ApiOperation({ summary: "Foydalanuvchi telegram bot orqali ro`yxatdan o`tadi" })
-  @ApiResponse({status:500,description:"Foydalanuvchi yaratishda serverda xatolik yuz berdi"})
+  //  @ApiOperation({ summary: "Foydalanuvchi telegram bot orqali ro`yxatdan o`tadi" })
+  // @ApiResponse({status:500,description:"Foydalanuvchi yaratishda serverda xatolik yuz berdi"})
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

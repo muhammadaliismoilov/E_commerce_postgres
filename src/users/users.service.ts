@@ -5,7 +5,7 @@ import { DrizzleType, InjectDrizzle } from "../drizzle/decarator";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { v4 as uuidv4 } from "uuid";
 import { eq, ne } from "drizzle-orm";
-import { th } from "@faker-js/faker/.";
+
 import { RoleEnum } from "src/drizzle/enums/role.enum";
 
 @Injectable()

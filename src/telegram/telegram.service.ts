@@ -19,7 +19,7 @@ export class TelegramBotService {
       throw new Error('❌ BOT_TOKEN topilmadi!');
     }
 
-    this.bot = new TelegramBot(token, { polling: true });
+    this.bot = new TelegramBot(token, );
     this.logger.log('🤖 Telegram bot ishga tushdi, /start kutyapti...');
     this.handleMessages();
   }
